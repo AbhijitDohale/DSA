@@ -1,0 +1,73 @@
+ import java.util.ArrayList;
+import java.util.Scanner;
+
+public class sports {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Input the number of students in each group
+        System.out.print("Enter the number of students in group A (cricket players): ");
+        int numCricketPlayers = scanner.nextInt();
+        System.out.print("Enter the number of students in group B (badminton players): ");
+        int numBadmintonPlayers = scanner.nextInt();
+
+        // Input the names of students in each group
+        ArrayList<String> cricketPlayers = inputPlayers("cricket", numCricketPlayers, scanner);
+        ArrayList<String> badmintonPlayers = inputPlayers("badminton", numBadmintonPlayers, scanner);
+
+        // Compute and print the list of students who play both cricket and badminton
+        ArrayList<String> bothPlayers = computeBothPlayers(cricketPlayers, badmintonPlayers);
+        System.out.println("\nStudents who play both cricket and badminton:");
+        for (String player : bothPlayers) {
+            System.out.println(player);
+        }
+
+        // Compute and print the list of students who play either cricket or badminton but not both
+        ArrayList<String> eitherPlayers = computeEitherPlayers(cricketPlayers, badmintonPlayers);
+        System.out.println("\nStudents who play either cricket or badminton but not both:");
+        for (String player : eitherPlayers) {
+            System.out.println(player);
+        }
+
+        scanner.close();
+    }
+
+    // Function to input the names of students in a group
+    public static ArrayList<String> inputPlayers(String sport, int numPlayers, Scanner scanner) {
+        ArrayList<String> players = new ArrayList<>();
+        System.out.println("Enter the names of students in group " + sport + ":");
+        for (int i = 0; i < numPlayers; i++) {
+            System.out.print("Player " + (i + 1) + ": ");
+            String playerName = scanner.next();
+            players.add(playerName);
+        }
+        return players;
+    }
+
+    // Function to compute the list of students who play both cricket and badminton
+    public static ArrayList<String> computeBothPlayers(ArrayList<String> cricketPlayers, ArrayList<String> badmintonPlayers) {
+        ArrayList<String> bothPlayers = new ArrayList<>();
+        for (String player : cricketPlayers) {
+            if (badmintonPlayers.contains(player)) {
+                bothPlayers.add(player);
+            }
+        }
+        return bothPlayers;
+    }
+
+    // Function to compute the list of students who play either cricket or badminton but not both
+    public static ArrayList<String> computeEitherPlayers(ArrayList<String> cricketPlayers, ArrayList<String> badmintonPlayers) {
+        ArrayList<String> eitherPlayers = new ArrayList<>();
+        for (String player : cricketPlayers) {
+            if (!badmintonPlayers.contains(player)) {
+                eitherPlayers.add(player);
+            }
+        }
+        for (String player : badmintonPlayers) {
+            if (!cricketPlayers.contains(player)) {
+                eitherPlayers.add(player);
+            }
+        }
+        return eitherPlayers;
+    }
+}
