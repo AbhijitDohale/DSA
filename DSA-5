@@ -1,139 +1,148 @@
-import java.util.Scanner;
+ import java.util.Scanner;
 
-class Tnode {
+class Threaded {
     int data;
-    Tnode left;
-    Tnode right;
-    int lbit, rbit;
+    Threaded left, right;
+    boolean isThreaded;
 
-    public Tnode(int data) {
-        this.data = data;
-        this.left = null;
-        this.right = null;
-        this.lbit = 0;
-        this.rbit = 0;
+    Threaded(int value) {
+        data = value;
+        left = right = null;
+        isThreaded = false;
     }
 }
 
-class TBT {
-    Tnode root, head;
+public class ThreadedBinaryTree {
+    Threaded root;
 
-    public TBT() {
+    ThreadedBinaryTree() {
         root = null;
-        head = null;
     }
 
-    void createTBT(int size, int rootData) {
-        root = new Tnode(rootData);
-        head = new Tnode(-9999);
-        head.left = root;
-        head.right = head;
-        head.lbit = 1;
-        head.rbit = 0;
-        root.left = head;
-        root.right = head;
+    // Function to insert nodes using array
+    void insertFromArray(int[] arr) {
+        root = insertFromArrayUtil(arr, root, 0, arr.length);
+    }
 
-        Scanner scanner = new Scanner(System.in);
-        for (int i = 1; i < size; i++) {
-            System.out.println("Enter new node : ");
-            int data = scanner.nextInt();
-            Tnode temp = new Tnode(data);
-            Tnode current = root;
-            while (true) {
-                if (data < current.data) {
-                    if (current.lbit == 0) {
-                        temp.left = current.left;
-                        temp.right = current;
-                        current.left = temp;
-                        current.lbit = 1;
-                        break;
-                    } else {
-                        current = current.left;
-                    }
-                } else {
-                    if (current.rbit == 0) {
-                        temp.left = current;
-                        temp.right = current.right;
-                        current.right = temp;
-                        current.rbit = 1;
-                        break;
-                    } else {
-                        current = current.right;
-                    }
-                }
+    Threaded insertFromArrayUtil(int[] arr, Threaded root, int i, int n) {
+        if (i < n) {
+            Threaded temp = new Threaded(arr[i]);
+            root = temp;
+
+            // insert left child
+            root.left = insertFromArrayUtil(arr, root.left, 2 * i + 1, n);
+
+            // insert right child
+            root.right = insertFromArrayUtil(arr, root.right, 2 * i + 2, n);
+        }
+        return root;
+    }
+
+    // Function to delete a node
+    Threaded deleteNode(Threaded root, int key) {
+        if (root == null)
+            return root;
+
+        if (key < root.data)
+            root.left = deleteNode(root.left, key);
+        else if (key > root.data)
+            root.right = deleteNode(root.right, key);
+        else {
+            if (root.left == null) {
+                Threaded temp = root.right;
+                return temp;
+            } else if (root.right == null) {
+                Threaded temp = root.left;
+                return temp;
             }
+
+            Threaded temp = minValueNode(root.right);
+            root.data = temp.data;
+            root.right = deleteNode(root.right, temp.data);
+        }
+        return root;
+    }
+
+    Threaded minValueNode(Threaded node) {
+        Threaded current = node;
+        while (current.left != null)
+            current = current.left;
+        return current;
+    }
+
+    // Function to display inorder traversal
+    void inorder(Threaded node) {
+        if (node != null) {
+            inorder(node.left);
+            System.out.print(node.data + " ");
+            inorder(node.right);
         }
     }
 
-    void preorder(Tnode node) {
+    // Function to display preorder traversal
+    void preorder(Threaded node) {
         if (node != null) {
             System.out.print(node.data + " ");
-            if (node.lbit == 1) {
-                preorder(node.left);
-            } else {
-                System.out.print("NULL ");
-            }
-            if (node.rbit == 1) {
-                preorder(node.right);
-            } else {
-                System.out.print("NULL ");
-            }
+            preorder(node.left);
+            preorder(node.right);
         }
     }
 
-    void inorder(Tnode node) {
-        if (node != null) {
-            if (node.lbit == 1) {
-                inorder(node.left);
-            } else {
-                System.out.print("NULL ");
-            }
-            System.out.print(node.data + " ");
-            if (node.rbit == 1) {
-                inorder(node.right);
-            } else {
-                System.out.print("NULL ");
-            }
-        }
+    // Function to find the leftmost node in a subtree
+    Threaded leftMost(Threaded node) {
+        if (node == null)
+            return null;
+        while (node.left != null)
+            node = node.left;
+        return node;
     }
-}
 
-class Main {
     public static void main(String[] args) {
+        ThreadedBinaryTree tree = new ThreadedBinaryTree();
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter the number of nodes (including root) : ");
-        int size = scanner.nextInt();
+        int choice;
 
-        System.out.print("Enter root node : ");
-        int rootData = scanner.nextInt();
-
-        TBT T = new TBT();
-        T.createTBT(size, rootData);
-
-        int ch;
         do {
-            System.out.println("\n1. Inorder Display of Threaded Binary Tree ");
-            System.out.println("2. Preorder Display of Threaded Binary Tree ");
-            System.out.println("3. Exit ");
-            System.out.print("Enter your choice : ");
-            ch = scanner.nextInt();
-            switch (ch) {
+            System.out.println("\nChoose an operation:");
+            System.out.println("1. Insert nodes using array");
+            System.out.println("2. Delete a node");
+            System.out.println("3. Show inorder traversal");
+            System.out.println("4. Show preorder traversal");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+
+            choice = scanner.nextInt();
+            switch (choice) {
                 case 1:
-                    System.out.print("Inorder Traversal: ");
-                    T.inorder(T.root); // Pass root for traversal
-                    System.out.println("\n");
+                    System.out.println("Enter the size of the array:");
+                    int size = scanner.nextInt();
+                    int[] arr = new int[size];
+                    System.out.println("Enter the elements of the array:");
+                    for (int i = 0; i < size; i++) {
+                        arr[i] = scanner.nextInt();
+                    }
+                    tree.insertFromArray(arr);
                     break;
                 case 2:
-                    System.out.print("Preorder Traversal: ");
-                    T.preorder(T.root); // Pass root for traversal
-                    System.out.println("\n");
+                    System.out.println("Enter the key to delete:");
+                    int key = scanner.nextInt();
+                    tree.root = tree.deleteNode(tree.root, key);
                     break;
                 case 3:
+                    System.out.println("Inorder traversal:");
+                    tree.inorder(tree.root);
+                    break;
+                case 4:
+                    System.out.println("Preorder traversal:");
+                    tree.preorder(tree.root);
+                    break;
+                case 5:
+                    System.out.println("Exited...");
                     break;
                 default:
-                    System.out.println("Enter correct choice");
-                    break;
+                    System.out.println("Invalid choice!");
             }
-        } while (ch != 3);
+        } while (choice != 5);
+        scanner.close();
     }
 }
