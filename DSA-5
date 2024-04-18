@@ -2,10 +2,10 @@
 
 class Threaded {
     int data;
-    Threaded left, right;
+    Threaded left, right;//declare two threded variables which represent left and right child node
     boolean isThreaded;
 
-    Threaded(int value) {
+    Threaded(int value) {//constructor which initilizes data value of the node and sets left and right 
         data = value;
         left = right = null;
         isThreaded = false;
@@ -13,9 +13,9 @@ class Threaded {
 }
 
 public class ThreadedBinaryTree {
-    Threaded root;
+    Threaded root;//represent root node of the binary tree
 
-    ThreadedBinaryTree() {
+    ThreadedBinaryTree() {//constructor which initilizes root node to null
         root = null;
     }
 
@@ -25,8 +25,8 @@ public class ThreadedBinaryTree {
     }
 
     Threaded insertFromArrayUtil(int[] arr, Threaded root, int i, int n) {
-        if (i < n) {
-            Threaded temp = new Threaded(arr[i]);
+        if (i < n) {//if index value is less then length of array
+            Threaded temp = new Threaded(arr[i]);//create new node assign to root node
             root = temp;
 
             // insert left child
@@ -43,20 +43,20 @@ public class ThreadedBinaryTree {
         if (root == null)
             return root;
 
-        if (key < root.data)
+        if (key < root.data)//deleted key is less then value of current node
             root.left = deleteNode(root.left, key);
         else if (key > root.data)
             root.right = deleteNode(root.right, key);
         else {
-            if (root.left == null) {
-                Threaded temp = root.right;
+            if (root.left == null) {//current node has no left child 
+                Threaded temp = root.right;//assign right child of the current node
                 return temp;
             } else if (root.right == null) {
                 Threaded temp = root.left;
                 return temp;
             }
 
-            Threaded temp = minValueNode(root.right);
+            Threaded temp = minValueNode(root.right);//find minimum value in right subtree
             root.data = temp.data;
             root.right = deleteNode(root.right, temp.data);
         }
@@ -72,7 +72,7 @@ public class ThreadedBinaryTree {
 
     // Function to display inorder traversal
     void inorder(Threaded node) {
-        if (node != null) {
+        if (node != null) {//perform inorder traversal of left subtree
             inorder(node.left);
             System.out.print(node.data + " ");
             inorder(node.right);
@@ -97,7 +97,7 @@ public class ThreadedBinaryTree {
         return node;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {//main method of program
         ThreadedBinaryTree tree = new ThreadedBinaryTree();
         Scanner scanner = new Scanner(System.in);
         int choice;
